@@ -1,4 +1,4 @@
 # demo890
-This repo I am creareating for demo perpose
+This repo I am creating this for demo purposes.
 <br>
 Author: Nikhil
