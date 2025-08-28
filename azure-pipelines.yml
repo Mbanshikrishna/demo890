@@ -9,17 +9,19 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-satges:
+stages:
 - stage: Terraform
-  displayName: 'buid resource group with terraform'
+  displayName: 'Build resource group with Terraform'
   jobs:
- - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-  displayName: 'Install Terraform'
-  inputs:
-    terraformVersion: '1.13.1'
+  - job: TerraformJob
+    steps:
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+      displayName: 'Install Terraform'
+      inputs:
+        terraformVersion: '1.13.1'
 
-- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'Run terraform init'
-  inputs:
-    command: init
-    workingDirectory: '$(System.DefaultWorkingDirectory)/demo890'
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      displayName: 'Run terraform init'
+      inputs:
+        command: init
+        workingDirectory: '$(System.DefaultWorkingDirectory)/demo890'
