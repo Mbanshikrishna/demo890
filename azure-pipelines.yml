@@ -10,9 +10,22 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: Terraform
-  displayName: 'Build resource group with Terraform'
-  jobs:
+stage: build 
+displayName: 'Build stage'
+jobs:
+  - job: BuildJob
+    steps:
+    - script: echo Hello, world!
+      displayName: 'Run a one-line script'  
+    - script: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yamlpipeline for more information.
+      displayName: 'Run a multi-line script'      
+    
+
+stage: Terraform
+displayName: 'Build resource group with Terraform'
+jobs:
   - job: TerraformJob
     steps:
     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
@@ -25,3 +38,23 @@ stages:
       inputs:
         command: init
         workingDirectory: '$(System.DefaultWorkingDirectory)/demo890'
+
+Stage: deploy
+dependsOn: Terraform/build
+displayName: 'Deploy to Azure'
+jobs:
+  - deployment: DeployJob
+    environment: 'demo890-env'
+    strategy:
+      runOnce:          
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'AzureServiceConnection'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Deploying to Azure"
+                az group create --name demo890-rg --location eastus
+            displayName: 'Run Azure CLI command'    
